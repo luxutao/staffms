@@ -7,6 +7,10 @@ import logging
 from config import Config
 from .utils import db, cache
 from app.auth import auth_api
+from app.company import company_api
+from app.department import department_api
+from app.job import job_api
+from app.staff import staff_api
 
 from flask import Flask
 
@@ -37,4 +41,8 @@ def create_app():
         return json.dumps({'code': 404, 'msg': "404 Not Found"}), 404
 
     app.register_blueprint(auth_api)
+    app.register_blueprint(company_api)
+    app.register_blueprint(department_api)
+    app.register_blueprint(job_api)
+    app.register_blueprint(staff_api)
     return app

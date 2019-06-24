@@ -1,19 +1,14 @@
 #!/usr/local/bin/python3
 # -*- conding: utf-8 -*-
 
-import os
 import time
-import base64
-import random
 
-from .models import Auth
-from app.utils import apiResponse, encrypt, authticket, makemail, loginauth
-from config import Config
+from app.models.authModels import Auth
+from app.utils import apiResponse, encrypt, loginauth
 from . import auth_api
 from ..utils import db, cache
 
 from datetime import datetime
-from sqlalchemy import or_
 from flask import request, make_response
 
 
