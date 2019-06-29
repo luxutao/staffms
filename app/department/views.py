@@ -11,18 +11,6 @@ from flask import request
 from sqlalchemy import or_
 
 
-@department_api.route('/getstaffs', endpoint='api_getstaffs')
-# @loginauth
-def getstaffs():
-    """
-    获取所有人员的简单信息
-    params: request
-    return: response
-    """
-    data = [{'id':staff.id,'name':staff.name} for staff in Staff.query.all()]
-    return apiResponse(200, data=data)
-
-
 @department_api.route('getleaders', endpoint='api_getleaders')
 # @loginauth
 def getleaders():
