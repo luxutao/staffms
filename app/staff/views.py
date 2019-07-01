@@ -3,6 +3,8 @@
 
 from app.models.staffInfoModels import StaffInfo
 from app.models.staffModels import Staff
+from app.models.departModels import Department
+from app.models.companyModels import Company
 from app.utils import apiResponse, loginauth
 from . import staff_api
 from ..utils import db
@@ -19,6 +21,23 @@ def getEasystaffs():
     return: response
     """
     data = [{'id':staff.id,'name':staff.name} for staff in Staff.query.all()]
+    return apiResponse(200, data=data)
+
+
+@staff_api.route('/getChartdata', endpoint='api_getChartdata')
+# @loginauth
+def getChartdata():
+    """
+    获取图表数据
+    params: request
+    return: response
+    """
+    data = {'staff': {}}
+    data['staff']['is_worker'] = Staff.query.filter(Staff.is_leave==True).count()
+    data['staff']['not_worker'] = Staff.query.filter(Staff.is_leave==False).count()
+    data['staff']['total_worker'] = data['staff']['is_worker'] + data['staff']['not_worker']
+    data['department'] = [{'name': department.name, 'value': len(department.staff_of_department)} for department in Department.query.all()]
+    data['company'] = [{'name': company.name, 'value': len(company.staff_of_company)} for company in Company.query.all()]
     return apiResponse(200, data=data)
 
 
@@ -48,9 +67,15 @@ def getStaffs():
     params: request
     return: response
     """
+    sid = request.args.get('sid') or None
     name = request.args.get('name') or ''
     page = request.args.get('page') or 1
     size = request.args.get('size') or 10
-    _query = Staff.query.filter(Staff.name.like('%'+name+'%')).paginate(int(page), int(size), False)
+    params = []
+    if sid:
+        params.append(Staff.id==sid)
+    if name:
+        params.append(Staff.name.like('%'+name+'%'))
+    _query = Staff.query.filter(*params).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
     return apiResponse(200, data={'data': data, 'total': _query.total})
