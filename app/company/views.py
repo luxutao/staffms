@@ -23,7 +23,7 @@ def getcompanys():
     page = request.args.get('page') or 1
     _query = Company.query.filter(Company.name.like('%'+name+'%')).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
-    return apiResponse(200, data=data)
+    return apiResponse(200, data={'data': data, 'total': _query.total})
 
 
 @company_api.route('/addcompany', methods=['POST'], endpoint='api_addcompany')

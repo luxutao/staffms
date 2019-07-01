@@ -54,7 +54,7 @@ def getusers():
     username = request.args.get('username') or ''
     _query = Auth.query.filter(Auth.username.like('%'+username+'%')).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
-    return apiResponse(200, data=data)
+    return apiResponse(200, data={'data': data, 'total': _query.total})
 
 
 @auth_api.route('/adduser', methods=['POST'], endpoint='api_adduser')

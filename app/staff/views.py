@@ -53,4 +53,4 @@ def getStaffs():
     size = request.args.get('size') or 10
     _query = Staff.query.filter(Staff.name.like('%'+name+'%')).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
-    return apiResponse(200, data=data)
+    return apiResponse(200, data={'data': data, 'total': _query.total})

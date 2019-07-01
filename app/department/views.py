@@ -91,7 +91,7 @@ def getdeparts():
         ))
     _query = Department.query.filter(*params).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
-    return apiResponse(200, data=data)
+    return apiResponse(200, data={'data': data, 'total': _query.total})
 
 
 @department_api.route('/adddepart', methods=['POST'], endpoint='api_adddepart')

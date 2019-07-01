@@ -41,7 +41,7 @@ def getjobs():
         params.append(Job.title == title)
     _query = Job.query.filter(*params).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
-    return apiResponse(200, data=data)
+    return apiResponse(200, data={'data': data, 'total': _query.total})
 
 
 @job_api.route('addjob', methods=['POST'], endpoint='api_addjob')
