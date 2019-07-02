@@ -25,6 +25,7 @@ class Staff(db.Model):
     salary = db.Column(db.Integer)
     equity = db.Column(db.Integer)
     salary_structure = db.Column(db.Integer, default=12)
+    performance = db.Column(db.Integer, default=0)
     company = db.Column(db.Integer, db.ForeignKey('company.id'))
     company_to = relationship("Company", backref="staff_of_company")
     department = db.Column(db.Integer, db.ForeignKey('department.id'))
@@ -35,7 +36,7 @@ class Staff(db.Model):
     create_time = db.Column(db.DateTime, server_default=db.func.now())
     modify_time = db.Column(db.DateTime, server_default=db.func.now())
 
-    def __init__(self, name, email, number, jointime, job, salary, company, department, leader, equity=0, salary_structure=12):
+    def __init__(self, name, email, number, jointime, job, salary, company, department, leader, performance=0, equity=0, salary_structure=12):
         self.name = name
         self.email = email
         self.number = number
@@ -44,6 +45,7 @@ class Staff(db.Model):
         self.salary = salary
         self.equity = equity
         self.salary_structure = salary_structure
+        self.performance = performance
         self.company = company
         self.department = department
         self.leader = leader
