@@ -89,7 +89,7 @@ def deluser():
     return: response
     """
     authid = request.get_json().get('authid')
-    if not authid:
+    if not authid or int(authid) == 1:
         return apiResponse(204)
     auth = Auth.query.filter_by(id=authid).first()
     if not auth:
