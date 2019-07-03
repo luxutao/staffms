@@ -11,7 +11,7 @@ from flask import request
 
 
 @company_api.route('/getcompanys', endpoint='api_getcompanys')
-# @loginauth
+@loginauth
 def getcompanys():
     """
     获取所有公司名称
@@ -27,7 +27,7 @@ def getcompanys():
 
 
 @company_api.route('/addcompany', methods=['POST'], endpoint='api_addcompany')
-# @loginauth
+@loginauth
 def addcompany():
     """
     添加公司
@@ -50,7 +50,7 @@ def addcompany():
 
 
 @company_api.route('/changecompany', methods=['POST'], endpoint='api_changecompany')
-# @loginauth
+@loginauth
 def changecompany():
     """
     修改公司名称或者状态
@@ -78,7 +78,7 @@ def changecompany():
 
 
 @company_api.route('/delcompany', methods=['POST'], endpoint='api_delcompany')
-# @loginauth
+@loginauth
 def delcompany():
     """
     删除公司

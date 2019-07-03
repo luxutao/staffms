@@ -42,7 +42,7 @@ def login():
 
 
 @auth_api.route('/getusers', endpoint='api_getauthusers')
-# @loginauth
+@loginauth
 def getusers():
     """
     获取登录账号
@@ -58,7 +58,7 @@ def getusers():
 
 
 @auth_api.route('/adduser', methods=['POST'], endpoint='api_adduser')
-# @loginauth
+@loginauth
 def adduser():
     """
     注册账号
@@ -81,7 +81,7 @@ def adduser():
 
 
 @auth_api.route('/deluser', methods=['POST'], endpoint='api_deluser')
-# @loginauth
+@loginauth
 def deluser():
     """
     删除账号
@@ -100,7 +100,7 @@ def deluser():
 
 
 @auth_api.route('/resetpassword', methods=['POST'], endpoint='api_resetpassword')
-# @loginauth
+@loginauth
 def resetpassword():
     """
     重置密码

@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
 # -*- conding: utf-8 -*-
 
+import datetime
+
 from app.models.staffInfoModels import StaffInfo
 from app.models.staffModels import Staff
 from app.models.departModels import Department
@@ -10,10 +12,55 @@ from . import staff_api
 from ..utils import db
 
 from flask import request
+from sqlalchemy import func
+
+
+@staff_api.route('/getcard', endpoint='api_getcard')
+@loginauth
+def getcard():
+    """
+    获取首页card数据
+    params: request
+    return: response
+    """
+    untreated = StaffInfo.query.filter(StaffInfo.finished==0).count()
+    stafftotal = Staff.query.count()
+    lastmonth = (datetime.date.today() + datetime.timedelta(days = -1)).strftime("%Y-%m-%d %H:%M:%S")
+    leavetotal = Staff.query.filter(Staff.leavetime.between(datetime.datetime.now()\
+        .strftime("%Y-%m-%d %H:%M:%S"), lastmonth)).count()
+    warning = StaffInfo.query.group_by(StaffInfo.name).having(func.count(StaffInfo.id)>=2).count()
+    is_worker = Staff.query.filter(Staff.is_leave == 0).count()
+    not_worker = Staff.query.filter(Staff.is_leave == 1).count()
+    data = {
+        'untreated': untreated,
+        'stafftotal': stafftotal,
+        'leavetotal': leavetotal,
+        'warning': warning,
+        'is_worker': is_worker,
+        'not_worker': not_worker,
+    }
+    return apiResponse(200, data=data)
+
+
+@staff_api.route('/getnews', endpoint='api_getnews')
+@loginauth
+def getnews():
+    """
+    获取填写员工入职表的员工
+    params: request
+    return: response
+    """
+    data = [{
+        'id':info.id,
+        'name':info.name,
+        'phone': info.phone,
+        'create_time': info.create_time.strftime('%Y-%m-%d %H:%M:%S')
+        } for info in StaffInfo.query.filter(StaffInfo.finished == 0).all()]
+    return apiResponse(200, data=data)
 
 
 @staff_api.route('/getEasystaffs', endpoint='api_getEasystaffs')
-# @loginauth
+@loginauth
 def getEasystaffs():
     """
     获取所有人员的简单信息
@@ -25,7 +72,7 @@ def getEasystaffs():
 
 
 @staff_api.route('/getChartdata', endpoint='api_getChartdata')
-# @loginauth
+@loginauth
 def getChartdata():
     """
     获取图表数据
@@ -61,6 +108,7 @@ def staffRegistration():
 
 
 @staff_api.route('/getStaffs', endpoint='api_getStaffs')
+@loginauth
 def getStaffs():
     """
     获取所有员工

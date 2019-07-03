@@ -12,7 +12,7 @@ from sqlalchemy import or_
 
 
 @department_api.route('getleaders', endpoint='api_getleaders')
-# @loginauth
+@loginauth
 def getleaders():
     """
     获取所有领导信息
@@ -31,7 +31,7 @@ def getleaders():
 
 
 @department_api.route('/getOrganization', endpoint='api_getOrganization')
-# @loginauth
+@loginauth
 def getOrganization():
     """
     获取部门树型架构
@@ -67,7 +67,7 @@ def getchildren(depid):
 
 
 @department_api.route('/getdeparts', endpoint='api_getdeparts')
-# @loginauth
+@loginauth
 def getdeparts():
     """
     获取所有部门
@@ -95,7 +95,7 @@ def getdeparts():
 
 
 @department_api.route('/adddepart', methods=['POST'], endpoint='api_adddepart')
-# @loginauth
+@loginauth
 def adddepart():
     """
     添加部门
@@ -117,7 +117,7 @@ def adddepart():
 
 
 @department_api.route('/deldepart', methods=['POST'], endpoint='api_deldepart')
-# @loginauth
+@loginauth
 def deldepart():
     """
     删除部门

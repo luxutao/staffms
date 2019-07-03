@@ -11,7 +11,7 @@ from flask import request
 
 
 @job_api.route('gettitles', endpoint='api_gettitles')
-# @loginauth
+@loginauth
 def gettitles():
     """
     获取所有职能
@@ -23,7 +23,7 @@ def gettitles():
 
 
 @job_api.route('/getjobs', endpoint='api_getjobs')
-# @loginauth
+@loginauth
 def getjobs():
     """
     获取所有岗位名称
@@ -45,7 +45,7 @@ def getjobs():
 
 
 @job_api.route('addjob', methods=['POST'], endpoint='api_addjob')
-# @loginauth
+@loginauth
 def addjob():
     """
     添加岗位
@@ -65,7 +65,7 @@ def addjob():
 
 
 @job_api.route('deljob', methods=['POST'], endpoint='api_deljob')
-# @loginauth
+@loginauth
 def deljob():
     """
     删除岗位
