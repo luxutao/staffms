@@ -7,12 +7,45 @@ from app.models.staffInfoModels import StaffInfo
 from app.models.staffModels import Staff
 from app.models.departModels import Department
 from app.models.companyModels import Company
+from app.models.jobModels import Job
 from app.utils import apiResponse, loginauth
 from . import staff_api
 from ..utils import db
 
 from flask import request
 from sqlalchemy import func
+
+
+@staff_api.route('/getRegisdata', endpoint='api_getRegisdata')
+@loginauth
+def getRegisdata():
+    """
+    获取所有职位部门等简单的信息
+    params: request
+    return: response
+    """
+    jobs = [{'id': job.id, 'name': job.name} for job in Job.query.all()]
+    companys = [{'id': company.id, 'name': company.name} for company in Company.query.all()]
+    staffs = [{'id': staff.id, 'name': staff.name} for staff in Staff.query.all()]
+    departs = [{'id': depart.id, 'name': depart.name} for depart in Department.query.all()]
+    return apiResponse(200, data={'jobs': jobs, 'companys': companys, 'staffs': staffs, 'departs': departs})
+
+
+@staff_api.route('/getStaffinfo', endpoint='api_getstaffinfo')
+@loginauth
+def getStaffinfo():
+    """
+    获取员工信息
+    params: request
+    return: response
+    """
+    sid = request.args.get('id') or ''
+    if not sid:
+        return apiResponse(204)
+    staffinfo = StaffInfo.query.get(sid)
+    if not staffinfo:
+        return apiResponse(204)
+    return apiResponse(200, data=staffinfo.to_dict())
 
 
 @staff_api.route('/getcard', endpoint='api_getcard')
@@ -107,6 +140,22 @@ def staffRegistration():
     return apiResponse(200)
 
 
+@staff_api.route('/staffhrRegistration', methods=['POST'], endpoint='api_staffhrRegistration')
+@loginauth
+def staffhrRegistration():
+    """
+    HR填写的部分信息
+    params: request
+    return: response
+    """
+    data = request.get_json()
+    staffdata = Staff(**data)
+    StaffInfo.query.filter(StaffInfo.id==data.get('staffinfo')).update({'finished': True})
+    db.session.add(staffdata)
+    db.session.commit()
+    return apiResponse(200)
+
+
 @staff_api.route('/getStaffs', endpoint='api_getStaffs')
 @loginauth
 def getStaffs():
@@ -115,7 +164,7 @@ def getStaffs():
     params: request
     return: response
     """
-    sid = request.args.get('sid') or None
+    sid = request.args.get('id') or None
     name = request.args.get('name') or ''
     page = request.args.get('page') or 1
     size = request.args.get('size') or 10

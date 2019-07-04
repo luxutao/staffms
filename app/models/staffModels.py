@@ -36,19 +36,9 @@ class Staff(db.Model):
     create_time = db.Column(db.DateTime, server_default=db.func.now())
     modify_time = db.Column(db.DateTime, server_default=db.func.now())
 
-    def __init__(self, name, email, number, jointime, job, salary, company, department, leader, performance=0, equity=0, salary_structure=12):
-        self.name = name
-        self.email = email
-        self.number = number
-        self.jointime = jointime
-        self.job = job
-        self.salary = salary
-        self.equity = equity
-        self.salary_structure = salary_structure
-        self.performance = performance
-        self.company = company
-        self.department = department
-        self.leader = leader
+    def __init__(self, **kwargs):
+        for key in kwargs.keys():
+            setattr(self, key, kwargs.get(key))
 
     def __repr__(self):
         return '<Staff %s>' % self.name
@@ -64,5 +54,5 @@ class Staff(db.Model):
             if model_dict[key]:
                 model_dict[key] = model_dict[key].strftime('%Y-%m-%d %H:%M:%S')
         model_dict['is_leave'] = '是' if model_dict['is_leave'] == 1 else '否'
-        model_dict['leader'] = self.query.get(self.leader).name
+        model_dict['leader'] = '无' if self.leader == 0 else self.query.get(self.leader).name
         return model_dict

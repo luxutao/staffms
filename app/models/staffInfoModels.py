@@ -43,9 +43,10 @@ class StaffInfo(db.Model):
     def to_dict(self):
         model_dict = dict(self.__dict__)
         del model_dict['_sa_instance_state']
-        for key in ['create_time', 'modify_time']:
+        for key in ['create_time', 'modify_time', 'birth']:
             if model_dict[key]:
-                model_dict[key] = model_dict[key].strftime('%Y-%m-%d %H:%M:%S')
+                model_dict[key] = model_dict[key].strftime('%Y-%m-%d') if key == 'birth' else model_dict[key].strftime('%Y-%m-%d %H:%M:%S')
         model_dict['finished'] = '已完成' if model_dict['finished'] == 1 else '未完成'
         model_dict['gender'] = '男' if model_dict['gender'] == 1 else '女'
+        model_dict['marriage'] = str(model_dict['marriage'])
         return model_dict
