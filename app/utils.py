@@ -17,6 +17,11 @@ from flask_cache import Cache
 db = SQLAlchemy()
 cache = Cache(config=Config.REDIS_CONFIG)
 
+templates = {
+    'phone': '手机号更改日志-由原来的{source}改变成了{now}',
+    'job': '岗位更改日志-由原来的{source}改变成了{now}',
+}
+
 
 def apiResponse(code, msg="", data=""):
     """

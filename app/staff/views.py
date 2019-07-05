@@ -8,9 +8,10 @@ from app.models.staffModels import Staff
 from app.models.departModels import Department
 from app.models.companyModels import Company
 from app.models.jobModels import Job
+from app.models.logModels import Log
 from app.utils import apiResponse, loginauth
 from . import staff_api
-from ..utils import db
+from ..utils import db, templates, cache
 
 from flask import request
 from sqlalchemy import func
@@ -24,11 +25,15 @@ def getRegisdata():
     params: request
     return: response
     """
+    v = request.args.get('v') or ''
     jobs = [{'id': job.id, 'name': job.name} for job in Job.query.all()]
     companys = [{'id': company.id, 'name': company.name} for company in Company.query.all()]
     staffs = [{'id': staff.id, 'name': staff.name} for staff in Staff.query.all()]
     departs = [{'id': depart.id, 'name': depart.name} for depart in Department.query.all()]
-    return apiResponse(200, data={'jobs': jobs, 'companys': companys, 'staffs': staffs, 'departs': departs})
+    data = {'jobs': jobs, 'companys': companys, 'staffs': staffs, 'departs': departs}
+    if v in ['jobs', 'companys', 'staffs', 'departs']:
+        data = {v: data[v]}
+    return apiResponse(200, data=data)
 
 
 @staff_api.route('/getStaffinfo', endpoint='api_getstaffinfo')
@@ -176,3 +181,31 @@ def getStaffs():
     _query = Staff.query.filter(*params).paginate(int(page), int(size), False)
     data = [u.to_dict() for u in _query.items]
     return apiResponse(200, data={'data': data, 'total': _query.total})
+
+
+@staff_api.route('/changeStaff', methods=['POST'], endpoint='api_changeStaff')
+@loginauth
+def changeStaff():
+    """
+    更改员工信息
+    params: request
+    return: response
+    """
+    uid = request.get_json().get('id')
+    column = request.get_json().get('column')
+    value = request.get_json().get('value')
+    if uid == None or column == None or value == None:
+        return apiResponse(204)
+    staff = Staff.query.filter(Staff.id==uid)
+    if staff.count() == 0:
+        return apiResponse(204)
+    if column == 'is_leave':
+        value = True if value == 1 else False
+    staff.update({column: value})
+    # message = templates[column].format(source=getattr(staff.first(), column), now=value)
+    # logdata = Log(uid, message, cache.get(request.cookies.get('token')))
+    # db.session.add(logdata)
+    db.session.commit()
+    return apiResponse(200)
+    
+

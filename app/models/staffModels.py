@@ -52,7 +52,8 @@ class Staff(db.Model):
         model_dict['staffinfo'] = self.staffinfo_to.to_dict()
         for key in ['jointime', 'leavetime', 'create_time', 'modify_time']:
             if model_dict[key]:
-                model_dict[key] = model_dict[key].strftime('%Y-%m-%d %H:%M:%S')
+                formatdate = '%Y-%m-%d' if key in ['jointime', 'leavetime'] else '%Y-%m-%d %H:%M:%S'
+                model_dict[key] = model_dict[key].strftime(formatdate)
         model_dict['is_leave'] = '是' if model_dict['is_leave'] == 1 else '否'
         model_dict['leader'] = '无' if self.leader == 0 else self.query.get(self.leader).name
         return model_dict
