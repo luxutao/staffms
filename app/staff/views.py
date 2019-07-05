@@ -196,15 +196,38 @@ def changeStaff():
     value = request.get_json().get('value')
     if uid == None or column == None or value == None:
         return apiResponse(204)
-    staff = Staff.query.filter(Staff.id==uid)
-    if staff.count() == 0:
+    staff = Staff.query.get(uid)
+    if not staff:
         return apiResponse(204)
+    
+    # 这里有问题，以后再优化
+    source = getattr(staff, column)
+    now = value
+    if column == 'phone':
+        source = staff.staffinfo_to.name
+    if  column == 'job':
+        source = staff.job_to.name
+        now = Job.query.get(value).name
+    if  column == 'department':
+        source = staff.department_to.name
+        now = Department.query.get(value).name
+    if  column == 'company':
+        source = staff.company_to.name
+        now = Company.query.get(value).name
+    if  column == 'leader':
+        source = Staff.query.get(staff.leader).name
+        now = Staff.query.get(value).name
+    message = templates[column].format(column=column, source=source, now=now)
     if column == 'is_leave':
         value = True if value == 1 else False
-    staff.update({column: value})
-    # message = templates[column].format(source=getattr(staff.first(), column), now=value)
-    # logdata = Log(uid, message, cache.get(request.cookies.get('token')))
-    # db.session.add(logdata)
+        message = templates[column]
+    logdata = Log(uid, message, cache.get(request.cookies.get('token')))
+    db.session.add(logdata)
+
+    if column == 'phone':
+        setattr(staff.staffinfo_to, column, value)
+    else:
+        setattr(staff, column, value)
     db.session.commit()
     return apiResponse(200)
     

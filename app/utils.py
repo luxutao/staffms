@@ -18,8 +18,12 @@ db = SQLAlchemy()
 cache = Cache(config=Config.REDIS_CONFIG)
 
 templates = {
-    'phone': '手机号更改日志-由原来的{source}改变成了{now}',
-    'job': '岗位更改日志-由原来的{source}改变成了{now}',
+    'phone': '字段：{column}-日志类型：手机号-原值：{source}-现值：{now}',
+    'job': '字段：{column}-日志类型：职位-原值：{source}-现值：{now}',
+    'company': '字段：{column}-日志类型：公司-原值：{source}-现值：{now}',
+    'department': '字段：{column}-日志类型：部门-原值：{source}-现值：{now}',
+    'salary': '字段：{column}-日志类型：薪资-原值：{source}-现值：{now}',
+    'is_leave': '字段：{column}-日志类型：是否离职-原值：否-现值：是',
 }
 
 

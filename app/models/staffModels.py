@@ -6,6 +6,7 @@ from .jobModels import Job
 from .companyModels import Company
 from .departModels import Department
 from .staffInfoModels import StaffInfo
+from .logModels import Log
 
 from sqlalchemy.orm import  relationship
 
@@ -56,4 +57,5 @@ class Staff(db.Model):
                 model_dict[key] = model_dict[key].strftime(formatdate)
         model_dict['is_leave'] = '是' if model_dict['is_leave'] == 1 else '否'
         model_dict['leader'] = '无' if self.leader == 0 else self.query.get(self.leader).name
+        model_dict['log'] = [log.to_dict() for log in self.log_of_staff]
         return model_dict

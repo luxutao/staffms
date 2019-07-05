@@ -28,6 +28,7 @@ class Log(db.Model):
     def to_dict(self):
         model_dict = dict(self.__dict__)
         del model_dict['_sa_instance_state']
-        model_dict['of_operator'] = self.of_operator_to.to_dict()['name']
-        model_dict['operator'] = self.operator_to.to_dict()['name']
+        model_dict['of_operator'] = self.of_operator_to.name
+        model_dict['operator'] = self.operator_to.username
+        model_dict['create_time'] = model_dict['create_time'].strftime('%Y-%m-%d %H:%M:%S')
         return model_dict
